@@ -24,7 +24,6 @@ public class Battle {
 
     private PokemonPanel playerPanel;
     private PokemonPanel enemyPanel;
-    private String imagePath;
 
     public Battle(Pokemon player, Pokemon enemy) {
         this.player = player;
@@ -60,7 +59,7 @@ public class Battle {
         battleScenePanel.setLayout(null);
 
         // player panel
-        playerPanel = new PokemonPanel(true, player.getImagePath());
+        playerPanel = new PokemonPanel(player.getImagePath());
         playerPanel.setBounds(100, 300, 100, 100);
         battleScenePanel.add(playerPanel);
 
@@ -69,7 +68,7 @@ public class Battle {
         battleScenePanel.add(playerNameLabel);
 
         // enemy panel
-        enemyPanel = new PokemonPanel(false, enemy.getImagePath());
+        enemyPanel = new PokemonPanel(enemy.getImagePath());
         enemyPanel.setBounds(500, 100, 100, 100);
         battleScenePanel.add(enemyPanel);
 
@@ -194,12 +193,10 @@ public class Battle {
     }
     //YOU CAN CHANGE THIS, THIS IS FOR PLACEHOLDER the paint part
     private class PokemonPanel extends JPanel {
-        private boolean isPlayer;
         private Image image;
 
 
-        public PokemonPanel(boolean isPlayer, String imagePath) {
-            this.isPlayer = isPlayer;
+        public PokemonPanel(String imagePath) {
             this.image = new ImageIcon(imagePath).getImage();
             setOpaque(false);
         }
@@ -222,10 +219,6 @@ public class Battle {
 
     public static void battleWindow() {
 
-        Random ran = new Random();
-        int ranPlayerNum = ran.nextInt(3);
-
-
         // Create an array to hold the three Pokemon players
         Pokemon[] players = new Pokemon[3];
 
@@ -234,7 +227,7 @@ public class Battle {
         players[1] = new Pokemon("Bulbasaur",1, 10, 1, 20, 100, 5, 100, "Grass", AssetLoader.getFile("Player/Bulbasaur_up2_16x16.png").getPath());
         players[2] = new Pokemon("Squirtle",64, 43, 50, 48, 44, 65, 100, "Water", AssetLoader.getFile("Player/Squirtle_up1_16x16.png").getPath());
 
-        // AddBmoves for each player
+        // Add moves for each player
         players[0].addMove(new Move("Slash", 70, "Normal", 1.0));
         players[0].addMove(new Move("Ember", 40, "Fire", 1.0));
         players[0].addMove(new Move("Dragon Breath", 65, "Dragon", 1.0));
