@@ -1,6 +1,5 @@
 package tile;
 
-import entity.Player;
 import main.AssetLoader;
 import main.GamePanel;
 
