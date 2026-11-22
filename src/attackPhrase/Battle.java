@@ -2,6 +2,7 @@ package attackPhrase;
 
 import collision.CollisionChecker;
 import entity.Player;
+import main.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -229,9 +230,9 @@ public class Battle {
         Pokemon[] players = new Pokemon[3];
 
         // Initialize the three Pokemon players with their respective attributes
-        players[0] = new Pokemon("Charmander", 50, 65, 60, 52, 39, 43, 100, "Fire", "C:\\Users\\Amy\\IdeaProjects\\Pokemon Planet Recreation\\Source Folder\\Player\\Charmander_up2_16x16.png");
-        players[1] = new Pokemon("Bulbasaur",1, 10, 1, 20, 100, 5, 100, "Grass", "C:\\Users\\Amy\\IdeaProjects\\Pokemon Planet Recreation\\Source Folder\\Player\\Bulbasaur_up2_16x16.png");
-        players[2] = new Pokemon("Squirtle",64, 43, 50, 48, 44, 65, 100, "Water", "C:\\Users\\Amy\\IdeaProjects\\Pokemon Planet Recreation\\Source Folder\\Player\\Squirtle_up1_16x16.png");
+        players[0] = new Pokemon("Charmander", 50, 65, 60, 52, 39, 43, 100, "Fire", AssetLoader.getFile("Player/Charmander_up2_16x16.png").getPath());
+        players[1] = new Pokemon("Bulbasaur",1, 10, 1, 20, 100, 5, 100, "Grass", AssetLoader.getFile("Player/Bulbasaur_up2_16x16.png").getPath());
+        players[2] = new Pokemon("Squirtle",64, 43, 50, 48, 44, 65, 100, "Water", AssetLoader.getFile("Player/Squirtle_up1_16x16.png").getPath());
 
         // AddBmoves for each player
         players[0].addMove(new Move("Slash", 70, "Normal", 1.0));
@@ -251,9 +252,9 @@ public class Battle {
 
 
         Pokemon[] enemies = {
-                new Pokemon("Bulbasaur", 1, 49, 49, 45, 65, 45, 100, "Grass", "C:\\Users\\Amy\\IdeaProjects\\Pokemon Planet Recreation\\Source Folder\\Player\\Bulbasaur_down2_16x16.png"),
-                new Pokemon("Squirtle", 1, 48, 65, 44, 50, 43, 100, "Water", "C:\\Users\\Amy\\IdeaProjects\\Pokemon Planet Recreation\\Source Folder\\Player\\Squirtle_down1_16x16.png"),
-                new Pokemon("Pidgey", 1, 45, 40, 35, 56, 35, 100, "Flying", "C:\\Users\\Amy\\IdeaProjects\\Pokemon Planet Recreation\\Source Folder\\NPC\\Pidgey_left.png")
+                new Pokemon("Bulbasaur", 1, 49, 49, 45, 65, 45, 100, "Grass", AssetLoader.getFile("Player/Bulbasaur_down2_16x16.png").getPath()),
+                new Pokemon("Squirtle", 1, 48, 65, 44, 50, 43, 100, "Water", AssetLoader.getFile("Player/Squirtle_down1_16x16.png").getPath()),
+                new Pokemon("Pidgey", 1, 45, 40, 35, 56, 35, 100, "Flying", AssetLoader.getFile("NPC/Pidgey_left.png").getPath())
         };
 
         // randomly select enemy pokemon

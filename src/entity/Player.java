@@ -2,6 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.AssetLoader;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -53,7 +54,7 @@ public class Player extends Entity { // Player class extending Entity
 
     // Method to get player image based on choice
     public void getPlayerImage(String choice) {
-        String basePath = "/Player/";
+        String basePath = "Player/";
 //        String pokemon = switch (choice) {
 //            case "Bulbasaur" -> "Bulbasaur";
 //            case "Charmander" -> "Charmander";
@@ -65,14 +66,14 @@ public class Player extends Entity { // Player class extending Entity
 
         try {
             // Load player images for different directions
-            up1 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_up1_16x16.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_up2_16x16.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_down1_16x16.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_down2_16x16.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_left1_16x16.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_left2_16x16.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_right1_16x16.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream(basePath + choice + "_right2_16x16.png"));
+            up1 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_up1_16x16.png"));
+            up2 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_up2_16x16.png"));
+            down1 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_down1_16x16.png"));
+            down2 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_down2_16x16.png"));
+            left1 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_left1_16x16.png"));
+            left2 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_left2_16x16.png"));
+            right1 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_right1_16x16.png"));
+            right2 = ImageIO.read(AssetLoader.getFile(basePath + choice + "_right2_16x16.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

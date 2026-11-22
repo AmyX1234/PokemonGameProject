@@ -1,100 +1,93 @@
 package main;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class JPanel1 extends JPanel implements ActionListener {
-    // Dimensions for the panel and images
-    final int PANEL_WIDTH = 1920;
-    final int PANEL_HEIGHT = 1080;
-    final int IMAGE_WIDTH = 200;  // Desired width for scaled images
-    final int IMAGE_HEIGHT = 200; // Desired height for scaled images
+    // Pokemon displayed on the title screen and their two animation frames.
+    private static final String[] POKEMON = {"Squirtle", "Charmander", "Bulbasaur"};
 
-    // Timer for changing images
-    Timer timer;
+    private final BufferedImage[][] pokemonImages = new BufferedImage[POKEMON.length][2];
+    private final Timer timer;
+    private int currentImageIndex;
 
-    // Initial positions for each character
-    int xs = 150;
-    int ys = 300;
-    int xc = 550;
-    int yc = 300;
-    int xb = 950;
-    int yb = 300;
+    // Use the display's usable size so the title screen fits without clipping.
+    public JPanel1(Dimension displaySize) {
+        setPreferredSize(displaySize);
+        setBackground(Color.BLACK);
 
-    // File paths for character images
-    private final String[] squirtle = {
-            "C:\\Users\\Amy\\IdeaProjects\\Amy World Pokemon Planet\\Source Folder\\Player\\Squirtle_down1_16x16.png",//squirtle_down2
-            "C:\\Users\\Amy\\IdeaProjects\\Amy World Pokemon Planet\\Source Folder\\Player\\Squirtle_down2_16x16.png",
-    };
-    private final String[] charmander = {
-            "C:\\Users\\Amy\\IdeaProjects\\Amy World Pokemon Planet\\Source Folder\\Player\\Charmander_down1_16x16.png",
-            "C:\\Users\\Amy\\IdeaProjects\\Amy World Pokemon Planet\\Source Folder\\Player\\Charmander_down2_16x16.png",
-    };
-    private final String[] bubasaur = {
-            "C:\\Users\\Amy\\IdeaProjects\\Amy World Pokemon Planet\\Source Folder\\Player\\Bulbasaur_down1_16x16.png",
-            "C:\\Users\\Amy\\IdeaProjects\\Amy World Pokemon Planet\\Source Folder\\Player\\Bulbasaur_down2_16x16.png",
-    };
-
-    // Arrays to hold images for each character
-    private Image[] squirtles;
-    private Image[] charmanders;
-    private Image[] bulbasaur;
-
-    // Index to track current image being displayed
-    private int currentImageIndex = 0;
-
-    // Constructor
-    public JPanel1() {
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-
-        // Load images for Squirtle
-        squirtles = new Image[squirtle.length];
-        for (int i = 0; i < squirtle.length; i++) {
-            ImageIcon icon = new ImageIcon(squirtle[i]);
-            squirtles[i] = icon.getImage().getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
+        // Load both frames for each Pokemon from the project's Source Folder.
+        try {
+            for (int pokemonIndex = 0; pokemonIndex < POKEMON.length; pokemonIndex++) {
+                for (int frameIndex = 0; frameIndex < pokemonImages[pokemonIndex].length; frameIndex++) {
+                    String imageName = "Player/" + POKEMON[pokemonIndex] + "_down" + (frameIndex + 1) + "_16x16.png";
+                    BufferedImage image = ImageIO.read(AssetLoader.getFile(imageName));
+                    if (image == null) {
+                        throw new IOException("Unsupported or invalid image: " + imageName);
+                    }
+                    pokemonImages[pokemonIndex][frameIndex] = image;
+                }
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to load title screen Pokemon images.", e);
         }
 
-        // Load images for Squirtle
-        charmanders = new Image[charmander.length];
-        for (int i = 0; i < charmander.length; i++) {
-            ImageIcon icon = new ImageIcon(charmander[i]);
-            charmanders[i] = icon.getImage().getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
-        }
-
-        // Load images for Bulbasaur
-        bulbasaur = new Image[bubasaur.length];
-        for (int i = 0; i < bubasaur.length; i++) {
-            ImageIcon icon = new ImageIcon(bubasaur[i]);
-            bulbasaur[i] = icon.getImage().getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
-        }
-
-        // Initialize timer to change images
-        timer = new Timer(1000, this); // Change images every 2000 ms (2 seconds)
+        timer = new Timer(1000, this);
         timer.start();
     }
 
-    // Method to paint the panel
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2D = (Graphics2D) g;
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-        g2D.drawImage(squirtles[currentImageIndex], xs, ys, null); // Draw Squirtle
-        g2D.drawImage(charmanders[currentImageIndex], xc, yc, null); // Draw Charmander
-        g2D.drawImage(bulbasaur[currentImageIndex], xb, yb, null); // Draw Bulbasaur
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // Derive text sizes and positions from the current panel size.
+        int width = getWidth();
+        int height = getHeight();
+        int titleFontSize = Math.max(20, Math.min(width / 32, height / 12));
+        int instructionFontSize = Math.max(16, Math.min(width / 48, height / 20));
+
+        drawCenteredText(g2, "Welcome to Pokemon Game Project.", titleFontSize, height / 6);
+        drawCenteredText(g2, "Click anywhere to start", instructionFontSize, height * 3 / 10);
+
+        // Keep the Pokemon evenly spaced and preserve each image's aspect ratio.
+        int spriteSize = Math.min(width / 7, height * 7 / 25);
+        int spriteTop = height * 11 / 20;
+        for (int i = 0; i < POKEMON.length; i++) {
+            BufferedImage image = pokemonImages[i][currentImageIndex];
+            double scale = Math.min((double) spriteSize / image.getWidth(),
+                    (double) spriteSize / image.getHeight());
+            int imageWidth = (int) (image.getWidth() * scale);
+            int imageHeight = (int) (image.getHeight() * scale);
+            int centerX = width * (i + 1) / (POKEMON.length + 1);
+            int imageX = centerX - imageWidth / 2;
+            int imageY = spriteTop + (spriteSize - imageHeight) / 2;
+
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g2.drawImage(image, imageX, imageY, imageWidth, imageHeight, null);
+        }
+
+        g2.dispose();
     }
 
-    // Action performed when the timer triggers
+    private void drawCenteredText(Graphics2D g2, String text, int fontSize, int baseline) {
+        g2.setFont(new Font(Font.SERIF, Font.BOLD, fontSize));
+        g2.setColor(Color.WHITE);
+        FontMetrics metrics = g2.getFontMetrics();
+        g2.drawString(text, (getWidth() - metrics.stringWidth(text)) / 2, baseline);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Increment the index to change to the next image
-        currentImageIndex = (currentImageIndex + 1) % squirtles.length;
-        currentImageIndex = (currentImageIndex + 1) % charmanders.length;
-        currentImageIndex = (currentImageIndex + 1) % bulbasaur.length;
-        repaint(); // Repaint the panel to display the new image
+        // Advance all Pokemon together to the next animation frame.
+        currentImageIndex = (currentImageIndex + 1) % pokemonImages[0].length;
+        repaint();
     }
-
-
 }
